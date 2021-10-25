@@ -1,0 +1,5 @@
+version: 1
+envfile: .env
+scripts:
+  run: python -m sharprocket
+values: {}
