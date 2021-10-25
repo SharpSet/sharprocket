@@ -1,12 +1,24 @@
-import cv2
+from cv2 import cv2
 import numpy as np
 from PIL import Image
+import os
+import shutil
+
+from sharprocket.constants import OUTPUT_FOLDER, COMPRESSION_MULTIPLIER
 
 def place_images(img_files, page_files):
+    """
+    Pastes all images into pages
+    """
+    shutil.rmtree(f"{OUTPUT_FOLDER}/")
+    os.makedirs(OUTPUT_FOLDER)
 
     image_i = 0
 
+    # For each page
     for page_no, page_file in enumerate(page_files):
+
+        # Create threshold to find rectangles
         image = cv2.imread(page_file)
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         t = 220
@@ -18,13 +30,16 @@ def place_images(img_files, page_files):
 
         image_boxes = []
         for c in cnts:
+
+            # Finds all shapes that are virtually empty
             peri = cv2.arcLength(c, True)
             approx = cv2.approxPolyDP(c, 0.015 * peri, True)
             x, y, w, h = cv2.boundingRect(approx)
-
             total_white = cv2.countNonZero(thresh[y:y+h,x:x+w])
             ratio = total_white / float(w*h)
+
             empty = ratio < 0.1
+
             if empty:
                 cv2.rectangle(image,(x,y),(x+w,y+h),(36,255,12),20)
                 image_boxes.append([x, y, w, h])
@@ -33,9 +48,18 @@ def place_images(img_files, page_files):
         # cv2.imshow('image', cv2.resize(image, (400, 600)))
         # cv2.waitKey()
 
+        # Puts images in correct order
         image_boxes = reversed(image_boxes)
+
+        # Opens file ready for pasting
+        background = Image.open(page_file, 'r')
+        bw, bh = background.size
+
         # Places image
-        for file_no, image_box in enumerate(image_boxes):
+        for image_box in image_boxes:
+
+            # Move onto next image
+            # Works between pages
             file_name = img_files[image_i]
             image_i += 1
 
@@ -44,12 +68,10 @@ def place_images(img_files, page_files):
 
             img = img.resize((w, h), Image.ANTIALIAS)
 
-            if file_no == 0:
-                background = Image.open(page_file, 'r')
-
-            else:
-                background = Image.open(f'./sharprocket/temp/output/out{page_no}.png', 'r')
             background.paste(img, (x, y))
-            background.save(f'./sharprocket/temp/output/out{page_no}.png')
+
+        background = background.resize((bw//COMPRESSION_MULTIPLIER, bh//COMPRESSION_MULTIPLIER), Image.ANTIALIAS)
+        background.save(f'./{OUTPUT_FOLDER}/out{page_no}.jpg', quality=95)
+        print(f"Saved Page {page_no}")
 
 

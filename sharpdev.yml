@@ -1,5 +1,7 @@
 version: 1
 envfile: .env
 scripts:
-  run: python -m sharprocket
+  setup: |
+    sudo apt-get install -y ffmpeg libsm6 libxext6 poppler-utils
+  run: pipenv run python3.9 -m sharprocket
 values: {}

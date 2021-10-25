@@ -1,20 +1,26 @@
+from sharprocket.constants import PAGES_FOLDER
 from pdf2image import convert_from_path
 import shutil
 import os
 
 def get_pages(file):
-    loc = "./sharprocket/temp/pages"
-    shutil.rmtree(f"{loc}/")
-    os.makedirs(loc)
+    """
+    Converts PDF to pages
+
+    returns: list of page filenames
+    """
+
+    # Delete old pages
+    shutil.rmtree(f"{PAGES_FOLDER}/")
+    os.makedirs(PAGES_FOLDER)
 
     pages = convert_from_path(file, 500)
 
-    i = 0
     files = []
-    for page in pages:
-        file = f'{loc}/out{i}.jpg'
+
+    for i, page in enumerate(pages):
+        file = f'{PAGES_FOLDER}/out{i}.jpg'
         files.append(file)
         page.save(file, 'JPEG')
-        i += 1
 
     return files
