@@ -1,7 +1,9 @@
-from sharprocket.constants import PAGES_FOLDER
-from pdf2image import convert_from_path
-import shutil
 import os
+import shutil
+
+from pdf2image import convert_from_path
+from sharprocket.constants import OUTPUT_FOLDER, PAGES_FOLDER
+
 
 def get_pages(file):
     """
@@ -24,3 +26,4 @@ def get_pages(file):
         page.save(file, 'JPEG')
 
     return files
+

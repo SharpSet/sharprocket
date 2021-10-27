@@ -6,6 +6,11 @@ import shutil
 
 from sharprocket.constants import IMAGES_FOLDER
 
+problem_sets = [
+    ["0", "o"],
+    ["f", "e"]
+]
+
 
 def get_images(text_file):
     """
@@ -18,13 +23,12 @@ def get_images(text_file):
 
     # Opens text file and finds letters in ##
     f = open(text_file, "r", encoding="utf8")
-    text = f.read()
-    found = re.findall("##(.*?)##", text, re.DOTALL)
+    text = f.read().replace(" ", "").replace("\n", "")
+    found = re.findall("[4#]([^#]{4})[4#]", text, re.DOTALL)
 
     ## Removes all spaces
     tags = []
     for tag in found:
-        tag = tag.replace(" ", "")
         tags.append(tag.lower())
 
     file_names = download(tags)
@@ -50,9 +54,10 @@ def download(tags):
             test_tags = []
 
             for i, char in enumerate(tag):
-                if char in ["0", "o", "O"]:
-                    combos = make_combos(tag, char, i)
-                    test_tags += combos
+                for problem_set in problem_sets:
+                    if char in problem_set:
+                        combos = make_combos(tag, char, i, problem_set)
+                        test_tags += combos
 
             for tag in test_tags:
                 url = f"https://{domain}/{tag}.png"
@@ -65,10 +70,12 @@ def download(tags):
         else:
             # If there isn't the problem just download
             url = f"https://{domain}/{tag}.png"
-            download_one(url, tag)
+            successful = download_one(url, tag)
 
-            loc = f"./{IMAGES_FOLDER}/{tag}.png"
-            file_names.append(loc)
+            if successful:
+
+                loc = f"./{IMAGES_FOLDER}/{tag}.png"
+                file_names.append(loc)
 
     return file_names
 
@@ -90,12 +97,13 @@ def download_one(url, tag):
         return False
 
 
-def make_combos(tag, char, i):
+def make_combos(tag, char, i, problem_set):
     """
     Makes all combinations of letters
     """
 
-    types = ["0", "o", "O"]
+    types = problem_set.copy()
+
     combos = [tag]
     types.remove(char)
 
@@ -109,7 +117,13 @@ def make_combos(tag, char, i):
 
 
 def problem_in_tag(tag):
-    if "0" in tag or "o" in tag or "O" in tag:
-        return True
+    """
+    Detects if any of the problem characters are in the tag
+    """
+
+    for problem_set in problem_sets:
+        found = [char for char in tag if char in problem_set]
+        if found:
+            return True
 
 

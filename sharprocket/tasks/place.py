@@ -6,14 +6,13 @@ import shutil
 
 from sharprocket.constants import OUTPUT_FOLDER, COMPRESSION_MULTIPLIER
 
-def place_images(img_files, page_files):
+def place_images(img_files, page_files, pdf_file):
     """
     Pastes all images into pages
     """
-    shutil.rmtree(f"{OUTPUT_FOLDER}/")
-    os.makedirs(OUTPUT_FOLDER)
 
     image_i = 0
+    output_images = []
 
     # For each page
     for page_no, page_file in enumerate(page_files):
@@ -60,8 +59,13 @@ def place_images(img_files, page_files):
 
             # Move onto next image
             # Works between pages
-            file_name = img_files[image_i]
-            image_i += 1
+
+            try:
+                file_name = img_files[image_i]
+                image_i += 1
+            except IndexError:
+                print("No more images")
+                break
 
             img = Image.open(file_name, 'r')
             x, y, w, h = image_box
@@ -71,7 +75,13 @@ def place_images(img_files, page_files):
             background.paste(img, (x, y))
 
         background = background.resize((bw//COMPRESSION_MULTIPLIER, bh//COMPRESSION_MULTIPLIER), Image.ANTIALIAS)
-        background.save(f'./{OUTPUT_FOLDER}/out{page_no}.jpg', quality=95)
+        output_images.append(background)
         print(f"Saved Page {page_no}")
+
+
+    print("Making PDF...")
+    im1 = output_images.pop(0)
+
+    im1.save(f"{OUTPUT_FOLDER}/{pdf_file}.pdf", "PDF", resolution=100.0, save_all=True, append_images=output_images)
 
 

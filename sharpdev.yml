@@ -1,7 +1,32 @@
+# https://tcude.net/setting-up-rclone-with-google-drive/
+
 version: 1
+
 envfile: .env
 scripts:
   setup: |
-    sudo apt-get install -y ffmpeg libsm6 libxext6 poppler-utils
+    sudo apt-get install -y ffmpeg libsm6 libxext6 poppler-utils rename
+    pipenv install
+
   run: pipenv run python3.9 -m sharprocket
-values: {}
+
+  install_rclone: |
+    sudo apt install unzip
+    curl https://rclone.org/install.sh | sudo bash
+    rclone config
+
+  ls: |
+    rclone ls "gdrive:MIT"
+
+  copy: |
+    rclone copy --drive-export-formats txt --drive-allow-import-name-change "gdrive:/LOC" DRIVE
+
+  test: |
+    sudo rm -r DRIVE
+    mkdir -p DRIVE
+    sharpdev copy
+    sharpdev run
+
+values:
+  LOC: "strathclyde/Year 2/2021-2022/Notes"
+  DRIVE: ./sharprocket/gdrive

@@ -1,7 +1,9 @@
-OUTPUT_FOLDER = "./sharprocket/temp/output"
+OUTPUT_FOLDER = "./sharprocket/output"
 IMAGES_FOLDER = "./sharprocket/temp/images"
 PAGES_FOLDER = "./sharprocket/temp/pages"
 
-DRIVE = "./sharprocket/drive"
+DRIVE = "./sharprocket/gdrive"
+
+TXT = "docx.txt"
 
 COMPRESSION_MULTIPLIER = 3
