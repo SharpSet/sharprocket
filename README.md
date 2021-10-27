@@ -1,6 +1,6 @@
-# SharpNet
+# SharpRocket
 
-Sharpnet is a service that controls NGINX allowing for painless and automatic control of your websites and webapps with automatic SSL certification.
+SharpRocket uses RocketBooks and OpenCV to let you place images into written notes.
 
 ![Example of Sharprocket File](https://files.mcaq.me/bqta.png)
 
