@@ -3,12 +3,12 @@ import urllib.request
 import urllib.error
 import os
 import shutil
+from itertools import product
 
-from sharprocket.constants import IMAGES_FOLDER
+from sharprocket.constants import IMAGES_FOLDER, TAG_SIZE
 
 problem_sets = [
-    ["0", "o"],
-    ["f", "e"]
+    ["6", "k"]
 ]
 
 
@@ -24,7 +24,7 @@ def get_images(text_file):
     # Opens text file and finds letters in ##
     f = open(text_file, "r", encoding="utf8")
     text = f.read().replace(" ", "").replace("\n", "")
-    found = re.findall("[4#]([^#]{4})[4#]", text, re.DOTALL)
+    found = re.findall("[4#]([^#]{" + str(TAG_SIZE) + "})[4#]", text, re.DOTALL)
 
     ## Removes all spaces
     tags = []
@@ -44,22 +44,24 @@ def download(tags):
 
     file_names = []
 
+    print(tags)
+
     for tag in tags:
 
-        # Issues with 0, o and O not being regonized
+        # Issues with letters not used by storage system
+        tag = tag.replace("s", "5")
+        tag = tag.replace("z", "2")
+
+        # Issues with 7 and 2 not being regonized
         # This code creates every possible combination to find
         # Which one is correct.
         # Has a low chance of finding something already in use
-        if problem_in_tag(tag):
-            test_tags = []
+        tag_problem_sets = problem_in_tag(tag)
+        if tag_problem_sets:
+            tag_combos = make_combos(tag, tag_problem_sets)
 
-            for i, char in enumerate(tag):
-                for problem_set in problem_sets:
-                    if char in problem_set:
-                        combos = make_combos(tag, char, i, problem_set)
-                        test_tags += combos
-
-            for tag in test_tags:
+            print(tag_combos)
+            for tag in tag_combos:
                 url = f"https://{domain}/{tag}.png"
                 successful = download_one(url, tag)
 
@@ -77,6 +79,7 @@ def download(tags):
                 loc = f"./{IMAGES_FOLDER}/{tag}.png"
                 file_names.append(loc)
 
+    print(file_names)
     return file_names
 
 
@@ -97,21 +100,28 @@ def download_one(url, tag):
         return False
 
 
-def make_combos(tag, char, i, problem_set):
+def make_combos(tag, tag_problem_sets):
     """
-    Makes all combinations of letters
+    Creates all possibilities of a tag
+
+    https://stackoverflow.com/questions/52382444/replace-combinations-of-characters
+
+    https://en.wikipedia.org/wiki/Cartesian_product
     """
 
-    types = problem_set.copy()
+    combos = []
 
-    combos = [tag]
-    types.remove(char)
+    # Convert input string into a list so we can easily substitute letters
+    seq = list(tag)
 
-    for _type in types:
-        temp = list(tag)
-        temp[i] = _type
+    # Find indices of key letters in seq
+    indices = [ i for i, c in enumerate(seq) if c in tag_problem_sets ]
 
-        combos.append(''.join(temp))
+    # Generate key letter combinations & place them into the list
+    for t in product(tag_problem_sets, repeat=len(indices)):
+        for i, c in zip(indices, t):
+            seq[i] = c
+        combos.append(''.join(seq))
 
     return combos
 
@@ -121,9 +131,13 @@ def problem_in_tag(tag):
     Detects if any of the problem characters are in the tag
     """
 
-    for problem_set in problem_sets:
-        found = [char for char in tag if char in problem_set]
-        if found:
-            return True
+    tag_problem_sets = []
+
+    for char in tag:
+        for problem_set in problem_sets:
+            if char in problem_set:
+                tag_problem_sets += problem_set
+
+    return list(set(tag_problem_sets))
 
 

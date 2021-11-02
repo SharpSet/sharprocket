@@ -7,3 +7,5 @@ DRIVE = "./sharprocket/gdrive"
 TXT = "docx.txt"
 
 COMPRESSION_MULTIPLIER = 3
+
+TAG_SIZE = 5

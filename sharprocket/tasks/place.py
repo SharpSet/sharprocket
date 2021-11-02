@@ -82,6 +82,6 @@ def place_images(img_files, page_files, pdf_file):
     print("Making PDF...")
     im1 = output_images.pop(0)
 
-    im1.save(f"{OUTPUT_FOLDER}/{pdf_file}.pdf", "PDF", resolution=100.0, save_all=True, append_images=output_images)
+    im1.save(f"{OUTPUT_FOLDER}/{pdf_file}", "PDF", resolution=100.0, save_all=True, append_images=output_images)
 
 
