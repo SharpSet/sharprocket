@@ -23,9 +23,10 @@ def get_images(text_file):
 
     # Opens text file and finds letters in ##
     f = open(text_file, "r", encoding="utf8")
-    text = f.read().replace(" ", "").replace("\n", "")
+    text = f.read().replace(" ", "").replace("\n", "").replace("*", "")
     found = re.findall("[4#]([^#]{" + str(TAG_SIZE) + "})[4#]", text, re.DOTALL)
 
+    print(found)
     ## Removes all spaces
     tags = []
     for tag in found:
@@ -41,16 +42,15 @@ def download(tags):
     """
 
     domain = "files.mcaq.me"
-
     file_names = []
-
-    print(tags)
 
     for tag in tags:
 
         # Issues with letters not used by storage system
         tag = tag.replace("s", "5")
         tag = tag.replace("z", "2")
+        tag = tag.replace("o", "0")
+        tag = tag.replace("i", "1")
 
         # Issues with 7 and 2 not being regonized
         # This code creates every possible combination to find
@@ -60,7 +60,6 @@ def download(tags):
         if tag_problem_sets:
             tag_combos = make_combos(tag, tag_problem_sets)
 
-            print(tag_combos)
             for tag in tag_combos:
                 url = f"https://{domain}/{tag}.png"
                 successful = download_one(url, tag)
@@ -79,7 +78,6 @@ def download(tags):
                 loc = f"./{IMAGES_FOLDER}/{tag}.png"
                 file_names.append(loc)
 
-    print(file_names)
     return file_names
 
 

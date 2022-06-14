@@ -21,12 +21,12 @@ scripts:
   copy: |
     rclone copy --drive-export-formats txt --drive-allow-import-name-change "gdrive:/LOC" DRIVE
 
-  test: |
+  full: |
     sudo rm -r DRIVE
     mkdir -p DRIVE
     sharpdev copy
     sharpdev run
 
 values:
-  LOC: "strathclyde/Year 2/2021-2022/Notes"
+  LOC: "strathclyde/Year 2/2021-2022/Semester 2/Notes"
   DRIVE: ./sharprocket/gdrive

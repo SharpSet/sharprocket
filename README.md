@@ -1,4 +1,6 @@
-# SharpRocket
+![SharpRocket](https://files.mcaq.me/70193.png)
+
+# Image Scanning Tool
 
 SharpRocket uses RocketBooks and OpenCV to let you place images into written notes.
 

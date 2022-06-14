@@ -64,7 +64,9 @@ def place_images(img_files, page_files, pdf_file):
                 file_name = img_files[image_i]
                 image_i += 1
             except IndexError:
-                print("No more images")
+                print("No more images:\n")
+                print(img_files)
+                print("")
                 break
 
             img = Image.open(file_name, 'r')
@@ -83,5 +85,3 @@ def place_images(img_files, page_files, pdf_file):
     im1 = output_images.pop(0)
 
     im1.save(f"{OUTPUT_FOLDER}/{pdf_file}", "PDF", resolution=100.0, save_all=True, append_images=output_images)
-
-
