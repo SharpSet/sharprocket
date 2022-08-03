@@ -1,6 +1,7 @@
 version: '2.1'
 orbs:
   python: circleci/python@2.0.3
+  sharpdev: sharptools/sharpdev@volatile
 
 jobs:
   build:
@@ -11,16 +12,10 @@ jobs:
     steps:
       - checkout
 
+      - sharpdev/install
+
       - python/install-packages:
           pkg-manager: poetry
-
-      - run:
-          name: Install Sharpdev
-          command: |
-            wget https://github.com/Sharpz7/sharpdev/releases/download/1.6/linux.tar.gz
-            sudo tar -C /usr/local/bin/ -zxvf linux.tar.gz
-            rm -r linux.tar.gz
-            chmod u+x /usr/local/bin/sharpdev
 
       - run:
           name: Lint
