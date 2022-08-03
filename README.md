@@ -1,3 +1,5 @@
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/SharpSet/sharprocket/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/SharpSet/sharprocket/tree/main)
+
 ![SharpRocket](https://files.mcaq.me/70193.png)
 
 # Image Scanning Tool
