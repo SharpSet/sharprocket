@@ -11,22 +11,25 @@ jobs:
     steps:
       - checkout
 
-      - run: |
-          pip install tox
-        name: Install Tox
+      - run:
+          name: Install Tox
+          command: |
+            pip install tox
+
 
       - python/install-packages:
           pkg-manager: poetry
 
       - run:
+          name: Lint
           command: |
             poetry run tox -e format-code
-          name: Lint
 
       - run:
+          name: Test
           command: |
             tox -e py39
-          name: Test
+
 
 workflows:
   main:
