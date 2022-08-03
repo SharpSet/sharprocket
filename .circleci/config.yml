@@ -11,25 +11,20 @@ jobs:
     steps:
       - checkout
 
-      - run:
-          name: Install Tox
-          command: |
-            pip install tox
-
-
       - python/install-packages:
           pkg-manager: poetry
 
       - run:
           name: Lint
           command: |
-            poetry run tox -e format-code
+            poetry run black --check sharprocket tests/
+            poetry run mypy --ignore-missing-imports sharprocket tests/
+            poetry run flake8 --max-line-length 88 --ignore E203,W503 sharprocket tests/
 
       - run:
-          name: Test
+          name:
           command: |
-            tox -e py39
-
+            poetry run pytest tests/unit/
 
 workflows:
   main:
