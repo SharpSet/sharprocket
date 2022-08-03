@@ -2,8 +2,6 @@
 
 version: 1
 
-envfile: .env
-
 setup: |
   sudo apt-get install -y ffmpeg libsm6 libxext6 poppler-utils rename
   poetry install
