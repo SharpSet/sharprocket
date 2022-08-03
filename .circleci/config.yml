@@ -4,16 +4,30 @@ orbs:
 
 jobs:
   build:
-    executor: python/3.8
+    executor:
+      name: python/default
+      tag: "3.9"
 
     steps:
       - checkout
+
+      - run: |
+          pip install tox
+        name: Install Tox
+
       - python/install-packages:
           pkg-manager: poetry
+
       - run:
           command: |
-            poetry run pytest --version
-          name: Test it
+            poetry run tox -e format-code
+          name: Lint
+
+      - run:
+          command: |
+            tox -e py39
+          name: Test
+
 workflows:
   main:
     jobs:
