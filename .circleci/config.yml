@@ -1,28 +1,20 @@
-version: 2.1
+version: '2.1'
+orbs:
+  python: circleci/python@2.0.3
 
 jobs:
-  build_and_test:
-    docker:
-      - image: python:3.9
+  build:
+    executor: python/3.8
 
     steps:
       - checkout
-
+      - python/install-packages:
+          pkg-manager: poetry
       - run:
-          name: Install Tox and Poetry
           command: |
-            pip install tox poetry
-            poetry install
-
-      - run:
-          name: Run Lint
-          command: tox -e format-code
-
-      - run:
-          name: Run Unit Tests
-          command: tox -e py39
-
+            poetry run pytest --version
+          name: Test it
 workflows:
-  sharprocket:
+  main:
     jobs:
-      - build_and_test
+      - build
