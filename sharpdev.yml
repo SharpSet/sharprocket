@@ -3,12 +3,13 @@
 version: 1
 
 envfile: .env
-scripts:
-  setup: |
-    sudo apt-get install -y ffmpeg libsm6 libxext6 poppler-utils rename
-    pipenv install
 
-  run: pipenv run python3.9 -m sharprocket
+setup: |
+  sudo apt-get install -y ffmpeg libsm6 libxext6 poppler-utils rename
+  poetry install
+
+scripts:
+  run: poetry run python -m sharprocket
 
   install_rclone: |
     sudo apt install unzip
@@ -26,6 +27,15 @@ scripts:
     mkdir -p DRIVE
     sharpdev copy
     sharpdev run
+
+  unit: |
+    poetry run pytest ./tests/unit/
+
+  e2e: |
+    poetry run python ./tests/e2e_test.py
+
+  test: |
+    tox -e py39 -e format-code
 
 values:
   LOC: "strathclyde/Year 2/2021-2022/Semester 2/Notes"

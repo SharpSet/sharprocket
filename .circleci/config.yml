@@ -1,0 +1,30 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@2.0.3
+
+jobs:
+  build_and_test:
+    executor: python/default
+    steps:
+      - checkout
+
+      - python/install-packages:
+          pkg-manager: poetry
+
+      - run:
+          name: Install Tox
+          command: pip install tox
+
+      - run:
+          name: Run Lint
+          command: tox -e format-code
+
+      - run:
+          name: Run Unit Tests
+          command: tox -e py39
+
+workflows:
+  sharprocket:
+    jobs:
+      - build_and_test
