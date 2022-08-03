@@ -1,20 +1,18 @@
 version: 2.1
 
-orbs:
-  python: circleci/python@2.0.3
-
 jobs:
   build_and_test:
-    executor: python/default
+    docker:
+      - image: python:3.9
+
     steps:
       - checkout
 
-      - python/install-packages:
-          pkg-manager: poetry
-
       - run:
-          name: Install Tox
-          command: pip install tox
+          name: Install Tox and Poetry
+          command: |
+            pip install tox poetry
+            poetry install
 
       - run:
           name: Run Lint
