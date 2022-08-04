@@ -1,10 +1,12 @@
+from typing import List
+
 import cv2
+from sharprocket.classes import Box
 from sharprocket.constants import (
     GRAY_THRESHOLD,
     MAX_BOX_OVERLAP,
     MAXIMUM_BOX_RATIO,
     MINIMUM_BOX_SIZE,
-    SCALING_FACTOR,
 )
 
 
@@ -23,7 +25,7 @@ def scan(page_file):
     return final_boxes
 
 
-def remove_problem_boxes(image_boxes):
+def remove_problem_boxes(image_boxes: List[Box]):
     """
     Removes boxes that are too small or too close to each other.
     """
@@ -41,15 +43,12 @@ def remove_problem_boxes(image_boxes):
 
     for boxa, boxb in problem_boxes:
 
-        a_width = boxa[2]
-        b_width = boxb[2]
-
         # which ever box is smaller gets removed
         # from image_boxes
-        if a_width > b_width and boxb in image_boxes:
+        if boxa.w > boxb.w and boxb in image_boxes:
             image_boxes.remove(boxb)
             print("Removed Box:", boxb)
-        elif b_width < a_width and boxa in image_boxes:
+        elif boxb.w < boxa.w and boxa in image_boxes:
             image_boxes.remove(boxa)
             print("Removed Box:", boxa)
 
@@ -65,17 +64,8 @@ def compare_overlap(boxa, boxb):
     if boxa == boxb:
         return False
 
-    x, y, w, h = boxa
-    a_max = (x + w, y + h)
-    a_min = (x, y)
-
-    x, y, w, h = boxb
-
-    b_max = (x + w, y + h)
-    b_min = (x, y)
-
-    dx = min(a_max[0], b_max[0]) - max(a_min[0], b_min[0])
-    dy = min(a_max[1], b_max[1]) - max(a_min[1], b_min[1])
+    dx = min(boxa.xf, boxb.xf) - max(boxa.x, boxb.x)
+    dy = min(boxa.yf, boxb.yf) - max(boxa.y, boxb.y)
 
     if (dx >= MAX_BOX_OVERLAP) and (dy >= MAX_BOX_OVERLAP):
         print(f"Box Overlap for {boxa} and {boxb}: {dx * dy}px^2")
@@ -105,32 +95,25 @@ def find_boxes(image):
         # Finds all shapes that are virtually empty
         peri = cv2.arcLength(c, True)
         approx = cv2.approxPolyDP(c, 0.015 * peri, True)
-        x, y, w, h = cv2.boundingRect(approx)
+        box = Box(*cv2.boundingRect(approx))
 
         minimum_area = MINIMUM_BOX_SIZE
-        if w * h < minimum_area:
+        if box.area < minimum_area:
             continue
 
-        factor = scale_factor(w, h)
+        small_box = box.scale(downscale=True)
 
         total_white = cv2.countNonZero(
-            thresh[y + factor : y + h - factor, x + factor : x + w - factor]
+            thresh[small_box.y : small_box.yf, small_box.x : small_box.xf]
         )
-        ratio = total_white / float(w * h)
+        ratio = total_white / float(box.area)
 
         empty = ratio < MAXIMUM_BOX_RATIO
 
         if empty:
-            print(f"Box Found: Ratio: {ratio} Area: {w*h} Location: {x, y}")
-            image_boxes.append([x - factor, y - factor, w + factor, h + factor])
+            print(f"Box Found: Ratio: {round(ratio, 6)} Box: {box}")
+
+            large_box = box.scale()
+            image_boxes.append(large_box)
 
     return image_boxes
-
-
-def scale_factor(w, h):
-    """
-    Creates a scaling factor for the box.
-    """
-
-    factor = int(w / SCALING_FACTOR) if w > h else int(h / SCALING_FACTOR)
-    return factor

@@ -23,7 +23,7 @@ jobs:
             sharpdev lint
 
       - run:
-          name:
+          name: Unit Tests
           command: |
             sharpdev unit
 

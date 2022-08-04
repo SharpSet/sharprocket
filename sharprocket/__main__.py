@@ -20,8 +20,9 @@ def main():
             print(f"Getting PDF Pages for {file}")
             print("=" * 60)
             page_files = pdf.get_pages(pdf_file)
-
             place.place_images(page_files, file)
+
+            print(f"Saved PDF {file}!\n")
 
     print("\nFINISHED\n")
 

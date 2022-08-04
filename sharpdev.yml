@@ -30,7 +30,7 @@ scripts:
     poetry run pytest ./tests/unit/
 
   e2e: |
-    poetry run python ./tests/e2e_test.py
+    poetry run python ./tests/box_e2e_test.py
 
   lint: |
     poetry run black --check sharprocket tests/

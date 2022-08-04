@@ -4,25 +4,6 @@ import urllib.error
 from sharprocket.constants import IMAGES_FOLDER
 
 
-def get_images(page_file, no_of_codes):
-    """
-    Downloads all images
-
-    returns: List of image filenames
-    """
-
-    codes = []
-
-    print(f"Please open {page_file}")
-
-    for _ in range(no_of_codes):
-        text = input("Enter a code: ")
-
-        codes.append(text)
-
-    return download(codes)
-
-
 def download(tags):
     """
     Downloads all images with tags from files.mcaq.me
@@ -40,6 +21,12 @@ def download(tags):
 
             loc = f"./{IMAGES_FOLDER}/{tag}.png"
             file_names.append(loc)
+
+        else:
+            print("ERROR")
+            print("==================")
+            print(f"Could not download {tag}")
+            exit()
 
     return file_names
 
