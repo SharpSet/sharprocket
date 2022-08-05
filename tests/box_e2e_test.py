@@ -9,7 +9,7 @@ from sharprocket.constants import (
 
 from sharprocket.tasks.boxes import find_boxes, remove_problem_boxes
 
-from sharprocket.tasks.user import place_data
+from sharprocket.tasks.images import place_data
 
 
 def test_e2e():

@@ -1,6 +1,6 @@
 from PIL import Image
 from sharprocket.constants import COMPRESSION_MULTIPLIER, OUTPUT_FOLDER
-from sharprocket.tasks import boxes, images, user
+from sharprocket.tasks import boxes, images
 
 
 def place_images(page_files, pdf_file):
@@ -18,8 +18,7 @@ def place_images(page_files, pdf_file):
 
         image_boxes = boxes.scan(page_file)
 
-        img_tags = user.get_images(page_file, image_boxes)
-        img_files = images.download(img_tags)
+        img_files = images.get_images(page_file, image_boxes)
 
         if len(img_files) != len(img_files):
             print("Error: Number of images and boxes don't match")

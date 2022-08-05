@@ -116,4 +116,16 @@ def find_boxes(image):
             large_box = box.scale()
             image_boxes.append(large_box)
 
+    image_boxes.sort(key=lambda test_box: -distance_from_origin(test_box), reverse=True)
+
     return image_boxes
+
+
+def distance_from_origin(box):
+    """
+    Calculates the distance between a box and the origin.
+    """
+
+    box_origin = Box(0, 0, 0, 0)
+
+    return ((box.x - box_origin.x) ** 2 + (box.y - box_origin.y) ** 2) ** 0.5

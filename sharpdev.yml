@@ -3,28 +3,23 @@
 version: 1
 
 setup: |
-  sudo apt-get install -y ffmpeg libsm6 libxext6 poppler-utils rename
+  sudo apt-get install -y ffmpeg libsm6 libxext6 poppler-utils rename unzip zip
+  curl https://rclone.org/install.sh | sudo bash
   poetry install
 
 scripts:
-  run: poetry run python -m sharprocket
+  default: |
+    rm -r "DRIVE"
+    mkdir -p "DRIVE"
+    rclone config
+    rclone copy --drive-export-formats txt --drive-allow-import-name-change "gdrive:/LOC" DRIVE
+    poetry run python -m sharprocket
+    zip -r data.zip OUT
 
   install_rclone: |
     sudo apt install unzip
     curl https://rclone.org/install.sh | sudo bash
     rclone config
-
-  ls: |
-    rclone ls "gdrive:MIT"
-
-  copy: |
-    rclone copy --drive-export-formats txt --drive-allow-import-name-change "gdrive:/LOC" DRIVE
-
-  full: |
-    sudo rm -r DRIVE
-    mkdir -p DRIVE
-    sharpdev copy
-    sharpdev run
 
   unit: |
     poetry run pytest ./tests/unit/
@@ -38,5 +33,6 @@ scripts:
     poetry run flake8 --max-line-length 88 --ignore E203,W503 sharprocket tests/
 
 values:
-  LOC: "strathclyde/Year 2/2021-2022/Semester 2/Notes"
+  LOC: strathclyde/rocketbook/notes
   DRIVE: ./sharprocket/gdrive
+  OUT: ./sharprocket/output
