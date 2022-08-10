@@ -32,7 +32,7 @@ Follow the instructions seen [Here](https://rclone.org/drive/) if you need help 
 
 ## Note on image quality
 
-SharpRocket has been tested with images of this quality [4000*5000 px]
+SharpRocket has been tested with images of this quality **(4000px*5000px)**
 
 ![](https://files.mcaq.me/1xrbk.jpg)
 
