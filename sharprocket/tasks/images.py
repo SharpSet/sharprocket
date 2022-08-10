@@ -43,6 +43,10 @@ def get_images(page_file, image_boxes):
 
 
 def place_data(image, box):
+    """
+    Places rectangles and Box ID's into image for the user
+    """
+
     cv2.rectangle(image, (box.x, box.y), (box.xf, box.yf), GREEN, RECTANGLE_THICKNESS)
 
     # get coords of rect center
@@ -58,9 +62,9 @@ def place_data(image, box):
         cv2.LINE_AA,
     )
 
-    small_box = box.scale(downscale=True)
-
     # draw a smaller box inside the bigger box
+    # This matches what the code is doing to detect empty boxes
+    small_box = box.scale(downscale=True)
     cv2.rectangle(
         image,
         (small_box.x, small_box.y),
@@ -78,7 +82,6 @@ def download(tags, image_boxes):
     file_names = []
 
     for tag, box in zip(tags, image_boxes):
-        # If there isn't the problem just download
 
         successful = download_one(tag)
 
@@ -86,6 +89,9 @@ def download(tags, image_boxes):
             file_names.append(successful)
 
         else:
+            # If it is not accepted,
+            # give the user one more time to correct the problem
+
             tag = input(f"Tag failed for {box.id}, try again: ")
             successful = download_one(tag.lower())
             if successful:
@@ -116,6 +122,7 @@ def download_one(tag):
                 output.write(pngfile.read())
             return loc
 
+        # We want to pass here to allow for all extensions to be tried
         except urllib.error.HTTPError:
             pass
 

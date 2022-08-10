@@ -8,23 +8,47 @@ SharpRocket uses RocketBooks and OpenCV to let you place images into written not
 
 ![Example of Sharprocket File](https://files.mcaq.me/bqta.png)
 
-## Running
+
+## How it works
+
+![](https://files.mcaq.me/84k4k.jpg)
+
+## Installing and Running
+
+First clone the repo
+
+```console
+git clone
+```
 
 SharpRocket uses sharpdev to run:
 
 ```console
-adam@console~$ sharpdev run
+sharpdev
 ```
 
-If you have install problems, run ```sharpdev setup```
+Follow the instructions seen [Here](https://rclone.org/drive/) if you need help with rClone.
 
-## Installing RClone
 
+## Note on image quality
+
+SharpRocket has been tested with images of this quality [4000*5000 px]
+
+![](https://files.mcaq.me/1xrbk.jpg)
+
+## Running Tests
+
+### Unit Tests
+
+```console
+sharpdev unit
 ```
-adam@console~$ sharpdev install_rclone
-```
 
-Follow the instructions seen [Here](https://rclone.org/drive/)
+### e2e Tests
+
+```console
+sharpdev e2e
+```
 
 ## Maintainers
 

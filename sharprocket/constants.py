@@ -1,13 +1,17 @@
 import os
+import pathlib
 
-OUTPUT_FOLDER = "./sharprocket/output"
-IMAGES_FOLDER = "./sharprocket/temp/images"
-PAGES_FOLDER = "./sharprocket/temp/pages"
-TESTING_FOLDER = "./tests/e2e_out"
-TESTING_PAGES_FOLDER = "./tests/pages"
-USER_VIEWING_FOLDER = "./sharprocket/temp"
+sharprocket = pathlib.Path("./sharprocket")
+tests = pathlib.Path("./tests")
 
-DRIVE = "./sharprocket/gdrive"
+OUTPUT_FOLDER = sharprocket / "output"
+IMAGES_FOLDER = sharprocket / "temp/images"
+PAGES_FOLDER = sharprocket / "temp/pages"
+TESTING_FOLDER = tests / "e2e_out"
+TESTING_PAGES_FOLDER = tests / "pages"
+USER_VIEWING_FOLDER = sharprocket / "temp"
+
+DRIVE = sharprocket / "gdrive"
 
 # boxes constants
 COMPRESSION_MULTIPLIER = 3

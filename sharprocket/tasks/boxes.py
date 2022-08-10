@@ -81,8 +81,9 @@ def find_boxes(image):
 
     image_boxes = []
 
+    # Turns the image black and white,
+    # and changes contrast to best help the findContours function.
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
     thresh = cv2.threshold(gray, GRAY_THRESHOLD, 255, cv2.THRESH_BINARY)[1]
     thresh = cv2.bitwise_not(thresh)
 
@@ -92,22 +93,24 @@ def find_boxes(image):
     image_boxes = []
     for c in cnts:
 
-        # Finds all shapes that are virtually empty
+        # Find Rectangles from Contours
         peri = cv2.arcLength(c, True)
         approx = cv2.approxPolyDP(c, 0.015 * peri, True)
         box = Box(*cv2.boundingRect(approx))
 
+        # Skips boxes that are too small
         minimum_area = MINIMUM_BOX_SIZE
         if box.area < minimum_area:
             continue
 
+        # Shrink area slightly to ignore drawn rectanlges
         small_box = box.scale(downscale=True)
-
         total_white = cv2.countNonZero(
             thresh[small_box.y : small_box.yf, small_box.x : small_box.xf]
         )
-        ratio = total_white / float(box.area)
 
+        # Skips boxes that are not empty enough
+        ratio = total_white / float(box.area)
         empty = ratio < MAXIMUM_BOX_RATIO
 
         if empty:
@@ -116,6 +119,8 @@ def find_boxes(image):
             large_box = box.scale()
             image_boxes.append(large_box)
 
+    # Sort Boxes by distance from origin
+    # Has the effect of making images boxes go from left to right, top to bottom
     image_boxes.sort(key=lambda test_box: -distance_from_origin(test_box), reverse=True)
 
     return image_boxes

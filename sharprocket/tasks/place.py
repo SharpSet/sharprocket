@@ -8,7 +8,6 @@ def place_images(page_files, pdf_file):
     Pastes all images into pages
     """
 
-    # image_i = 0
     output_images = []
 
     # For each page
@@ -37,6 +36,7 @@ def place_images(page_files, pdf_file):
 
             background.paste(img, (box.x, box.y))
 
+        # Resizes image to fit box
         background = background.resize(
             (bw // COMPRESSION_MULTIPLIER, bh // COMPRESSION_MULTIPLIER),
             Image.ANTIALIAS,

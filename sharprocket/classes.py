@@ -4,6 +4,10 @@ from sharprocket.constants import SCALING_FACTOR
 
 
 class Box:
+    """
+    Stores all the data for a box.
+    """
+
     def __init__(self, x, y, w, h, old_id=None):
         self.x = x
         self.y = y
@@ -21,6 +25,9 @@ class Box:
             self.id = shortuuid.uuid()[:8]
 
     def scale(self, downscale=False):
+        """
+        Scales by a small factor to try and hide the drawn boxes
+        """
 
         factor = (
             int(self.w / SCALING_FACTOR)
