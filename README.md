@@ -18,7 +18,7 @@ SharpRocket uses RocketBooks and OpenCV to let you place images into written not
 First clone the repo
 
 ```console
-git clone
+git clone https://github.com/SharpSet/sharprocket.git
 ```
 
 SharpRocket uses sharpdev to run:
